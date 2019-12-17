@@ -20,8 +20,10 @@ line API (both curl commands must be executed in this order):
 
 ```
 curl http://localhost:5585/_project_export/user/orctest
-curl http://localhost:5585/_download/user/orctest
+curl -o orctest.slab http://localhost:5585/_download/user/orctest
 ```
+
+These commands can be found in `export_project.sh`
 
 # Test Execution
 
