@@ -12,12 +12,11 @@ The project runtime is executed using the streamlab-git runtime (see https://git
 
 # Source Data
 
-The data consists of EDRs - CSV files - these are currently stored in compressed form in a file `teliot.tar.gz`.
-The data is too large to save in github (even compressed it is 160Mb), and it would be a nuisance to access from S3 on every run. So pull the data from S3 and place into a local directory.
-Inflate the tarball - the top level directory is `iot`.
+The data consists of EDRs - CSV files - these are currently stored in compressed form in a file `vzw.iot.tgz`.
+The data is too large to save in github (even compressed it is 160Mb), so it is stored in OneDrive - ask nigel.thomas@guavus.com for access. Inflate the tarball - the top level directory is `iot`.
 
 
-When starting the container, use Docker's -v switch to mount the file on the container as a volume.
+When starting the container, use Docker's -v switch to mount the file on the container as a volume. This is shown in `dockerdev.sh`
 
 ```
 docker run ... -v /path/on/host/iot://home/sqlstream/iot ...
