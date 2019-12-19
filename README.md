@@ -9,15 +9,16 @@ The project export files (.slab) contain the project details for reuse and devel
 
 # Test Project Development 
 
-The test project is "sqlstream-orctest" and its StreamLab project export files are:
+The test project is "sqlstream-orctest" and its StreamLab projects (each represented by a project export 'slab' file) are:
 
-* CSVingest.slab - ingest data from the source CSV files
+* CSVingest - ingest data from the source CSV files
 
 And the following write / egress projects which can be executed in parallel or separately:
 
-* WriteORClocal.slab
-* WriteORChdfs.slab
-* WriteORChive.slab 
+* WriteCSVlocal - a bare-bones CSV egress just to verify pipeline functionality
+* WriteORClocal - write to local ORC files
+* WriteORChdfs  - write to ORC files and copy them to HDFS
+* WriteORChive  - write to ORC files and organize them as a Hive table
 
 (these projects are in development)
 
