@@ -1,4 +1,4 @@
-# orc-test
+# sqlstream-orctest
 
 # Introduction
 
@@ -9,21 +9,33 @@ The project export files (.slab) contain the project details for reuse and devel
 
 # Test Project Development 
 
-The test project is "orctest" and its StreamLab project export file is `orctest.slab`.
+The test project is "sqlstream-orctest" and its StreamLab project export files are:
 
-To develop the project, use `dockerdev.sh`. This launches a SQLstream docker appliance with the source test data mounted as 
-`/home/sqlstream/iot' and loads the `orctest.slab` project into StreamLab. The docker container will have the name `orcdev`.
+* CSVingest.slab - ingest data from the source CSV files
 
-You can make changes to the project, then remember to export the project back to your working copy of the streamlab-orctest repository
+And the following write / egress projects which can be executed in parallel or separately:
+
+* WriteORClocal.slab
+* WriteORChdfs.slab
+* WriteORChive.slab 
+
+(these projects are in development)
+
+To develop and maintain the StreamLab projects, use the `dockerdev.sh` script. This launches a SQLstream docker appliance with the source test data mounted as 
+`/home/sqlstream/iot' and loads the StreamLab projects into StreamLab. The docker container will have the name `orcdev`.
+
+You can make changes to the project(s), then remember to export any changed project back to your working copy of the streamlab-orctest repository
 before shutting down the docker container. You may export the project manually (using the StreamLab GUI) or you may use the command
-line API (both curl commands must be executed in this order):
+line API (both curl commands must be executed in this order) for each project
 
 ```
-curl http://localhost:5585/_project_export/user/orctest
-curl -o orctest.slab http://localhost:5585/_download/user/orctest
+curl http://localhost:5585/_project_export/user/CSVingest
+curl -o orctest.slab http://localhost:5585/_download/user/CSVingest
 ```
 
 These commands can be found in `export_project.sh`
+
+Note: the `dockerdev.sh` script gets the slab files from the git repository and NOT from your local working copy. Be sure to commit and push your changes before testing.
 
 # Test Execution
 
@@ -33,11 +45,12 @@ The project depends on the streamlab-git runtime (see https://github.com/NigelTh
 
 * assembles a docker container based on the `sqlstream/minimal:release` image
 * pulls the test code from this github repository
-* extracts SQL from the project export (slab file)
+* extracts SQL from the project exports (slab files)
 * Sets up the SQLstream schemas required to run the test
 * Starts reading the input and delivering data to the outputs
 
-To start the project, use the `dockertest.sh` script.
+To start the projects, use the `dockertest.sh` script. You can either allow all egress pipelines to be installed - they will run in parallel - or you can nominate just a subset to
+be executed by supplying a comma-separated list of projects to be installed (note: `CSVingest` is always loaded).
 
 # Source Data
 
@@ -50,7 +63,9 @@ When starting the container, use Docker's -v switch to mount the file on the con
 docker run ... -v /path/on/host/iot://home/sqlstream/iot ...
 ```
 
-The root path for source data on the container is expected to be `/home/sqlstream/iot/`.
+The root path for source data on the container is expected to be `/home/sqlstream/iot/`; we get EDR data from ../iot/rhy in which we see files like:
+
+
 
 If using Kubernetes, follow the same approach, creating a read-only volume for this source data so that the test containers running in a pod can mount the volume.
 
