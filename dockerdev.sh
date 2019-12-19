@@ -17,6 +17,9 @@ CONTAINER_DATA_ROOT=/home/sqlstream/iot
 
 docker run -v $HOST_DATA_ROOT:$CONTAINER_DATA_ROOT -p 80:80 -p 5560:5560 -p 5580:5580 -p 5585:5585 -p 5590:5590 -e GIT_ACCOUNT=$GIT_ACCOUNT -e GIT_PROJECT_NAME=$GIT_PROJECT_NAME -d --name $CONTAINER_NAME -it $BASE_IMAGE
 
+# Handy for setting the environment when you exec into container
+docker cp sqlstream_profile.sh ${CONTAINER_NAME}:/home/sqlstream
+
 # wait for the image to be started
 
 while [ 1 -eq 1 ]
