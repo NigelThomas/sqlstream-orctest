@@ -19,6 +19,9 @@ docker run -v $HOST_DATA_ROOT:$CONTAINER_DATA_ROOT -p 80:80 -p 5560:5560 -p 5580
 
 # Handy for setting the environment when you exec into container
 docker cp sqlstream_profile.sh ${CONTAINER_NAME}:/home/sqlstream
+docker cp preproject.sh ${CONTAINER_NAME}:/home/sqlstream
+docker cp clean_edrs.sql ${CONTAINER_NAME}:/home/sqlstream
+
 
 # wait for the image to be started
 
@@ -29,15 +32,22 @@ do
     then
         break
     fi
-    echo waiting for webagent
-    sleep 3
+    echo waiting for s-Server
+    sleep 5
 done
+
+
+# do some pre-project setup
+docker exec -it orcdev /home/sqlstream/preproject.sh
+
+
 
 for f in *.slab
 do
     if [ -e $f ]
     then
-        Echo posting $f
+        echo
+        echo posting $f
 
         # TODO check if project already exists, fail if so
 
@@ -65,6 +75,8 @@ do
         # TODO check response
 
         rm /tmp/$f.{1,2,3}
+        echo
+
     else
         echo No such project export file $f
     fi

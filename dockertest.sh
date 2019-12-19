@@ -2,7 +2,7 @@
 
 # Start the test environment (based on streamlab-git image)
 
-BASE_IMAGE=nigelclthomas/streamlab-git
+BASE_IMAGE=streamlab-git
 GIT_ACCOUNT=https://github.com/NigelThomas
 GIT_PROJECT_NAME=sqlstream-orctest
 CONTAINER_NAME=orctest
