@@ -9,7 +9,7 @@
 CREATE OR REPLACE SCHEMA "interface";
 
 
-CREATE OR REPLACE STREAM "interface"."ingest_final_sink"(
+CREATE OR REPLACE STREAM "interface"."clean_edrs"(
     "countryCode" CHAR(2),
     "countryName" VARCHAR(34),
     "city" VARCHAR(32),
