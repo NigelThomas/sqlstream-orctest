@@ -6,7 +6,7 @@
 
 echo ... Creating the clean_edrs interface stream
 
-sqllineClient --run=clean_edrs.sql
+sqllineClient --run=$(which clean_edrs.sql)
 
 echo ... done
 
