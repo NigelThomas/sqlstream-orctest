@@ -1,0 +1,152 @@
+<configuration>
+    
+    <property>
+      <name>fs.defaultFS</name>
+      <value>hdfs://sqlstream01</value>
+      <final>true</final>
+    </property>
+    
+    <property>
+      <name>ha.zookeeper.acl</name>
+      <value>sasl:nn:rwcda</value>
+    </property>
+    
+    <property>
+      <name>ha.zookeeper.quorum</name>
+      <value>sqlstream01-slv-01.cloud.in.guavus.com:2181,sqlstream01-slv-02.cloud.in.guavus.com:2181,sqlstream01-slv-03.cloud.in.guavus.com:2181</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.ambari-server-sqlstream01.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.ambari-server-sqlstream01.hosts</name>
+      <value>sqlstream01-mgt-01.cloud.in.guavus.com</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hcat.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hcat.hosts</name>
+      <value></value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hdfs.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hdfs.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hive.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.hive.hosts</name>
+      <value>sqlstream01-mgt-01.cloud.in.guavus.com,sqlstream01-mst-01.cloud.in.guavus.com,sqlstream01-mst-02.cloud.in.guavus.com,sqlstream01-slv-01.cloud.in.guavus.com,sqlstream01-slv-02.cloud.in.guavus.com,sqlstream01-slv-03.cloud.in.guavus.com</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.HTTP.groups</name>
+      <value>users</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.HTTP.hosts</name>
+      <value>sqlstream01-mgt-01.cloud.in.guavus.com,sqlstream01-mst-01.cloud.in.guavus.com,sqlstream01-mst-02.cloud.in.guavus.com,sqlstream01-slv-01.cloud.in.guavus.com,sqlstream01-slv-02.cloud.in.guavus.com,sqlstream01-slv-03.cloud.in.guavus.com</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.knox.groups</name>
+      <value>users</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.knox.hosts</name>
+      <value>sqlstream01-mst-02.cloud.in.guavus.com,sqlstream01-mst-01.cloud.in.guavus.com</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.livy.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.livy.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.oozie.hosts</name>
+      <value>sqlstream01-mgt-01.cloud.in.guavus.com,sqlstream01-slv-01.cloud.in.guavus.com,sqlstream01-slv-02.cloud.in.guavus.com,sqlstream01-slv-03.cloud.in.guavus.com,sqlstream01-mst-01.cloud.in.guavus.com,sqlstream01-mst-02.cloud.in.guavus.com</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.yarn.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.yarn.hosts</name>
+      <value>sqlstream01-mst-01.cloud.in.guavus.com,sqlstream01-mst-02.cloud.in.guavus.com</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.zeppelin.groups</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.proxyuser.zeppelin.hosts</name>
+      <value>*</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.auth_to_local</name>
+      <value>RULE:[1:$1@$0](ambari-qa-sqlstream01@GVS.GGN)s/.*/ambari-qa/
+RULE:[1:$1@$0](hbase-sqlstream01@GVS.GGN)s/.*/hbase/
+RULE:[1:$1@$0](hdfs-sqlstream01@GVS.GGN)s/.*/hdfs/
+RULE:[1:$1@$0](spark-sqlstream01@GVS.GGN)s/.*/spark/
+RULE:[1:$1@$0](zeppelin-sqlstream01@GVS.GGN)s/.*/zeppelin/
+RULE:[1:$1@$0](.*@GVS.GGN)s/@.*//
+RULE:[2:$1@$0](amshbase@GVS.GGN)s/.*/ams/
+RULE:[2:$1@$0](amszk@GVS.GGN)s/.*/ams/
+RULE:[2:$1@$0](atlas@GVS.GGN)s/.*/atlas/
+RULE:[2:$1@$0](dn@GVS.GGN)s/.*/hdfs/
+RULE:[2:$1@$0](hbase@GVS.GGN)s/.*/hbase/
+RULE:[2:$1@$0](hive@GVS.GGN)s/.*/hive/
+RULE:[2:$1@$0](jhs@GVS.GGN)s/.*/mapred/
+RULE:[2:$1@$0](jn@GVS.GGN)s/.*/hdfs/
+RULE:[2:$1@$0](knox@GVS.GGN)s/.*/knox/
+RULE:[2:$1@$0](nifi@GVS.GGN)s/.*/nifi/
+RULE:[2:$1@$0](nm@GVS.GGN)s/.*/yarn/
+RULE:[2:$1@$0](nn@GVS.GGN)s/.*/hdfs/
+RULE:[2:$1@$0](rangeradmin@GVS.GGN)s/.*/ranger/
+RULE:[2:$1@$0](rangertagsync@GVS.GGN)s/.*/rangertagsync/
+RULE:[2:$1@$0](rangerusersync@GVS.GGN)s/.*/rangerusersync/
+RULE:[2:$1@$0](rm@GVS.GGN)s/.*/yarn/
+RULE:[2:$1@$0](yarn@GVS.GGN)s/.*/yarn/
+DEFAULT</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.authentication</name>
+      <value>kerberos</value>
+    </property>
+    
+    <property>
+      <name>hadoop.security.authorization</name>
+      <value>true</value>
+    </property>
+    
+  </configuration>
