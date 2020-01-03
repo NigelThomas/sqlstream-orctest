@@ -1,0 +1,7 @@
+192.168.104.82 kdc-devopslabs.gvs.ggn 
+192.168.141.104 sqlstream01-mgt-01.cloud.in.guavus.com 
+192.168.141.111 sqlstream01-mst-01.cloud.in.guavus.com 
+192.168.141.102 sqlstream01-mst-02.cloud.in.guavus.com 
+192.168.141.103 sqlstream01-slv-01.cloud.in.guavus.com 
+192.168.141.110 sqlstream01-slv-02.cloud.in.guavus.com 
+192.168.141.109 sqlstream01-slv-03.cloud.in.guavus.com

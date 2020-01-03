@@ -4,6 +4,10 @@
 #
 # Assume we are running in the project directory
 
+echo ... add definitions to hosts file
+
+cat hadoop/testhosts >> /etc/hosts
+
 echo ... Creating the clean_edrs interface stream
 
 sqllineClient --run=$(which clean_edrs.sql)
