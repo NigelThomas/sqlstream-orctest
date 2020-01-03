@@ -6,14 +6,6 @@
   <name>fs.defaultFS</name>
   <value>hdfs://sqlstream01-mst-01.cloud.in.guavus.com:8020/user</value>
  </property>
- <property>
-  <name>hadoop.security.authentication</name>
-  <value>kerberos</value>
- </property>
- <property>
-  <name>hadoop.rpc.protection</name>
-  <value>authentication</value>
- </property>
 
  <property>
    <name>fs.file.impl</name>
