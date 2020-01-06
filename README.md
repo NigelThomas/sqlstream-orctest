@@ -101,6 +101,9 @@ or export these environment variables first:
  export LOAD_SLAB_FILES="IngestCSV.slab WriteCSVtoHDFS.slab" 
  ./dockertest.sh
 ```
+
+The `dockertest.sh` script ends by tailing the docker log file (`docker logs -f orctest`) so once that has shown the container  being started and s-Server trace log messages in the log eyou can Ctrl-C out, or you can leave the log tail running and work in another terminal.
+
 * **TODO** - the default for LOAD_SLAB_FILES will be defined to test ORC output to HDFS using authentication
 * **TODO** - the other important testing combination will be CSVingest to Hive with authentication
 
@@ -134,6 +137,9 @@ The container will be named `orcdev`. The script automatically kills and removes
 You can use LOAD_SLAB_FILES and HOST_DATA_ROOT environment variables exactly as defined for the test image (but using the `./dockerdev,.sh script`). The same defaults will apply.
 
 When you start the container the selected StreamLab projects will be already loaded and started. 
+
+The `dockerdev.sh` script ends by tailing the docker log file (`docker logs -f orcdev`) so once that has shown the container  being started and s-Server trace log messages in the log eyou can Ctrl-C out, or you can leave the log tail running and work in another terminal.
+
 
 # Making changes to the StreamLab rojects
 
