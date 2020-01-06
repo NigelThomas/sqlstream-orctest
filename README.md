@@ -11,18 +11,22 @@ The project export files (.slab) contain the project details for reuse and devel
 
 The test project is "sqlstream-orctest" and its StreamLab projects (each represented by a project export 'slab' file) are:
 
-* CSVingest - ingest data from the source CSV files
+* CSVingest - ingests data from the source CSV files (by default in $HOME/vzw/iot/rhy)
 
 And the following write / egress projects which can be executed in parallel or separately:
 
-* WriteCSVlocal - a bare-bones CSV egress just to verify pipeline functionality
-* WriteCSVtoHDFS - write to HDFS with no authentication
+* WriteCSVlocal - a bare-bones CSV egress just to verify pipeline functionality - writes by default to $HOME/orctest-output/csv
 
 These projects are in development:
 
-* WriteORClocal - write to local ORC files
-* WriteORChdfs  - write to ORC files and copy them to HDFS
+* WriteCSVtoHDFS - write to HDFS with no authentication 
+* WriteORCtoHDFS - write to ORC files and copy them to HDFS with authentication
+
+These projects are planned soon:
+
 * WriteORChive  - write to ORC files and organize them as a Hive table
+
+See __Running tests__ below and particularly the sections on **source data** and **target data** to learn how to relocate the source and target locations on the host server.
 
 ## Preparing test image `streamlab-git` 
 
@@ -70,13 +74,22 @@ Now you can use the image to run the `sqlstream-orctest` project. First, clone t
  cd
  git clone https://github.com/NigelThomas/sqlstream-orctest.git
 ```
-You need to make sure you have the Verizon IOT data tarball (from  https://guavusnetwork-my.sharepoint.com/:u:/g/personal/nigel_thomas_guavus_com/EbxQZ01mkMBBtaxtrt7Wx4oBGq_LKZ5yrx2MnDjguLFR-g?e=KXf7qo). Unpack that into a directory on your server (to `$HOME/vzw/iot`):
+
+### Source Data
+
+You need to make sure you have the Verizon IOT data tarball (from  https://guavusnetwork-my.sharepoint.com/:u:/g/personal/nigel_thomas_guavus_com/EbxQZ01mkMBBtaxtrt7Wx4oBGq_LKZ5yrx2MnDjguLFR-g?e=KXf7qo). Unpack that into a directory on your server (normally to `$HOME/vzw/iot`):
 ```
  cd
  mkdir vzw
  cd vzw
  tar zxvf vzw.iot.tgz
 ```
+
+If you need to change the location of the source CSV data, you will need to set the environment variable HOST_DATA_SOURCE accordingly before running the tests.
+
+### Target Data
+
+Make a directory $HOME/orctest-output. If you need to use a different location, you will need to set the environment variable HOST_DATA_TARGET before running the tests.
 
 Next, start the test runtime:
 ```
@@ -98,13 +111,13 @@ or export these environment variables first:
 
 ```
  export HOST_DATA_ROOT=path/to/my/tarball/
- export LOAD_SLAB_FILES="IngestCSV.slab WriteCSVtoHDFS.slab" 
+ export LOAD_SLAB_FILES="IngestCSV.slab WriteORCtoHDFS.slab" 
  ./dockertest.sh
 ```
 
 The `dockertest.sh` script ends by tailing the docker log file (`docker logs -f orctest`) so once that has shown the container  being started and s-Server trace log messages in the log eyou can Ctrl-C out, or you can leave the log tail running and work in another terminal.
 
-* **TODO** - the default for LOAD_SLAB_FILES will be defined to test ORC output to HDFS using authentication
+* the default for LOAD_SLAB_FILES is defined to test ORC output to HDFS using authentication. 
 * **TODO** - the other important testing combination will be CSVingest to Hive with authentication
 
 # Developing and extending the tests
@@ -194,18 +207,6 @@ RFDR46EUTX_flow_REPORTOCS_20191004112549_test_000000000_710
 If using Kubernetes, follow the same approach, creating a read-only volume for this source data so that the test containers running in a pod can mount the volume.
 
 
-
-# Target Data
-
-**TODO** complete this section or combine into the summary with StreamLab project names
-
-
-## local file
-
-
-## HDFS files
-
-## Hive Table
 
 ## Credentials
 
