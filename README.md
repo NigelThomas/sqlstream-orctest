@@ -12,13 +12,13 @@ The project export files (.slab) contain the project details for reuse and devel
 The test project is "sqlstream-orctest" and its StreamLab projects (each represented by a project export 'slab' file) are:
 
 | StreamLab project | Description | Reads from 
-| --- | ---
+| --- | --- | ---
 | CSVingest | ingests data from the source CSV files | host server volume at `$HOME/vzw/iot/rhy`
 
 And the following write / egress projects which can be executed in parallel or separately:
 
 | StreamLab project | Description | Writes to | Status 2020/01/06
-| --- | --- | ---
+| --- | --- | --- | ---
 | WriteORCtoHDFS | write to ORC files | `$HOME/orctest-output` on the host server | Not yet writing to HDFS
 | WriteCSVlocal | a bare-bones CSV egress just to verify pipeline functionality | `/home/sqlstream/output` on the container | Good
 | WriteCSVtoHDFS | write to HDFS with no authentication | TBA | NOT FULLY WORKING
