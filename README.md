@@ -97,15 +97,23 @@ Next, start the test runtime:
 
 The container will be named `orcdev`. The script automatically kills and removes any existing `orcdev` container, so be careful not to accidentally rerun the `dockertest.sh` script while a test is underway unless you want to abort the first test.
 
-Setting the `LOAD_SLAB_FILES` environment variable instructs the container to load only the listed StreamLab project files. Generally it will be more convenient to combine the ingest project with just one write (sink, egress) project at a time.
+### Arguments for the runtime
 
-If you need to place the data somewhere different on the host server you will also need to set the environment variable HOST_DATA_ROOT accordingly, either:
+The `dockertest.sh` script supports setting certain arguments by supplying values in some environment variables:
 
+| Environment Variable | Default | Usage
+| --- | --- | ---
+| LOAD_SLAB_FILES | "IngestCSV.slab WriteCSVtoHDFS.slab" | instructs the container to load only the listed StreamLab project files. Generally it will be more convenient to combine the ingest project with just one write (sink, egress) project at a time.
+| HOST_DATA_SOURCE | $HOME/vzw/iot | Location of the source data on the host server (mounted on the container as `/home/sqlstream/iot`)
+| HOST_DATA_TARGET | $HOME/output | Location of local target data on the host server (mounted on the container as `/home/sqlstream/output`)
+| SQLSTREAM_HEAP_MEMORY | 4096m | Java max heap memory (set using -Xmx<size> ; include k, m, g units as required. s-Server default is 2048m)
+
+You can set any one or more of these environment variables either directly on the command line:
 ```
  HOST_DATA_ROOT=path/to/my/tarball/ LOAD_SLAB_FILES="CSVingest.slab WriteCSVtoHDFS.slab" ./dockertest.sh
 ```
 
-or export these environment variables first: 
+or set and export these environment variables first: 
 
 ```
  export HOST_DATA_ROOT=path/to/my/tarball/
@@ -113,10 +121,17 @@ or export these environment variables first:
  ./dockertest.sh
 ```
 
+The default setting for `LOAD_SLAB_FILES` checks the HDFS delivery. The other common setting will be to test Hive:
+
+```
+ export LOAD_SLAB_FILES="IngestCSV.slab WriteORCtoHive.slab"
+ ./dockertest.sh
+```
+
+### Following the container log
+
 The `dockertest.sh` script ends by tailing the docker log file (`docker logs -f orctest`) so once that has shown the container  being started and s-Server trace log messages in the log eyou can Ctrl-C out, or you can leave the log tail running and work in another terminal.
 
-* the default for LOAD_SLAB_FILES is defined to test ORC output to HDFS using authentication. 
-* **TODO** - the other important testing combination will be CSVingest to Hive with authentication
 
 # Developing and extending the tests
 
