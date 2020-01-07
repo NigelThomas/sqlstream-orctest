@@ -4,12 +4,7 @@
 
 This repo contains a StreamLab project that can be used to test ORC egress (to local files, HDFS and Hive)
 
-The project export files (.slab) contain the project details for reuse and development. 
-
-
-# Test Project `sqlstream-orctest`
-
-The test project is "sqlstream-orctest" and its StreamLab projects (each represented by a project export 'slab' file) are:
+The StreamLab export files (`xxx.slab`) each contain StreamLab project details for reuse and development. Each StreamLab project contains a single pipeline. There is one ingest pipeline:
 
 | StreamLab project | Description | Reads from 
 | --- | --- | ---
@@ -26,20 +21,20 @@ And the following write / egress projects which can be executed in parallel or s
 
 See __Running tests__ below and particularly the sections on **source data** and **target data** to learn how to relocate the source and target locations on the host server.
 
-## Preparing test image `streamlab-git` 
+## About the test image `streamlab-git` 
 
 This test harness relies on two Docker images:
 
-| Image Name | Purpose 
-| --- | ---
-| `sqlstream/streamlab-git-dev` | Includes StreamLab, used for project development
-| `sqlstream/streamlab-git` | Only includes s-Server, used as a run time environment
+| Image Name | Purpose | Derived from 
+| --- | --- | ---
+| `sqlstream/streamlab-git-dev` | Includes StreamLab, used for project development | `sqlstream/development:release`
+| `sqlstream/streamlab-git` | Only includes s-Server, used as a run time environment | `sqlstream/minimal:release`
 
-For testing purposes only the second, `sqlstream/streamlab-git` image is needed. It is also assumed you have Docker already installed.
+You can read more about the base images here: https://docs.sqlstream.com/installing-sqlstream/docker 
+
+For testing purposes only the second image `sqlstream/streamlab-git` is needed.
 
 The test image is prepared as shown below - but note that this will usually be performed by the SQLstream team who can also push the build to the DockerIO repository.
-This makes an image called `sqlstream/streamlab-git` in your local Docker repository and pushes it to Docker. This image is based on the 'release' (6.0.1) branch docker image `sqlstream/minimal:release`. You should rerun `./dockerbuild.sh` whenever you want to pull the latest version of `sqlstream/minimal`. 
-
 
 ```
  cd
@@ -48,6 +43,7 @@ This makes an image called `sqlstream/streamlab-git` in your local Docker reposi
 
  ./dockerbuild.sh
 ```
+This makes an image called `sqlstream/streamlab-git` in your local Docker repository and pushes it to Docker. This image is based on the 'release' (6.0.1) branch docker image `sqlstream/minimal:release`. 
 
 When a container is started from this image it:
 
@@ -58,7 +54,7 @@ When a container is started from this image it:
 * Starts reading the input and delivering data to the outputs
 
 
-Note that __the image does not include the `sqlstream-orctest` project definitions__ - as described these get added whenever a container is created from the image. So you don't need to rebuild this image to pick up changes to `sqlstream-orctest` as long as those changes have been pushed to the original master repo on github.
+Note that __the image does not include the `sqlstream-orctest` project definitions__ - as described these get added whenever a container is created from the image. So you **don't need to rebuild this image** to pick up changes to `sqlstream-orctest` as long as those changes have been pushed to the original master repo on github.
 
 Tests are executed without requiring StreamLab. At runtime, the SQL will be extracted from the project and installed. 
 
@@ -77,7 +73,7 @@ Now you can use the image to run the `sqlstream-orctest` project. First, clone t
 
 ### Source Data
 
-The data consists of EDRs - CSV files - these are currently stored in compressed form in a file `vzw.iot.tgz`.
+The data consists of EDRs - which are CSV files - these are currently stored in compressed form in a file `vzw.iot.tgz`.
 The data is too large to save in github (even compressed it is 160Mb), so it is stored in OneDrive - ask nigel.thomas@guavus.com for access. Inflate the tarball - the top level directory is `iot`.
 
 You need to make sure you have the Verizon IOT data tarball (from  https://guavusnetwork-my.sharepoint.com/:u:/g/personal/nigel_thomas_guavus_com/EbxQZ01mkMBBtaxtrt7Wx4oBGq_LKZ5yrx2MnDjguLFR-g?e=KXf7qo). Unpack that into a directory on your server (normally to `$HOME/vzw/iot`):
@@ -101,6 +97,15 @@ If you need to change the location of the source CSV data, you will need to set 
 
 Make a directory $HOME/orctest-output. If you need to use a different location, you will need to set the environment variable HOST_DATA_TARGET before running the tests.
 
+If you do not want to expose output data on the host server, just set the `HOST_DATA_TARGET` environment variable:
+
+```
+export HOST_DATA_TARGET=none
+```
+
+before running the `dockertest.sh` script as shown below.
+
+
 ### Starting the test container
 
 Next, start the test runtime:
@@ -119,7 +124,7 @@ The `dockertest.sh` script supports setting certain arguments by supplying value
 | --- | --- | ---
 | LOAD_SLAB_FILES | "IngestCSV.slab WriteCSVtoHDFS.slab" | instructs the container to load only the listed StreamLab project files. Generally it will be more convenient to combine the ingest project with just one write (sink, egress) project at a time.
 | HOST_DATA_SOURCE | $HOME/vzw/iot | Location of the source data on the host server (mounted on the container as `/home/sqlstream/iot`)
-| HOST_DATA_TARGET | $HOME/output | Location of local target data on the host server (mounted on the container as `/home/sqlstream/output`)
+| HOST_DATA_TARGET | $HOME/output | Location of local target data on the host server (mounted on the container as `/home/sqlstream/output`). **NOTE** if this is set to "none" then the output volume will not be mounted and all local target data will remain within the container
 | SQLSTREAM_HEAP_MEMORY | 4096m | Java max heap memory (set using -Xmx<size> ; include k, m, g units as required. s-Server default is 2048m)
 
 You can set any one or more of these environment variables either directly on the command line:
