@@ -75,19 +75,31 @@ Now you can use the image to run the `sqlstream-orctest` project. First, clone t
 
 ### Source Data
 
+The data consists of EDRs - CSV files - these are currently stored in compressed form in a file `vzw.iot.tgz`.
+The data is too large to save in github (even compressed it is 160Mb), so it is stored in OneDrive - ask nigel.thomas@guavus.com for access. Inflate the tarball - the top level directory is `iot`.
+
 You need to make sure you have the Verizon IOT data tarball (from  https://guavusnetwork-my.sharepoint.com/:u:/g/personal/nigel_thomas_guavus_com/EbxQZ01mkMBBtaxtrt7Wx4oBGq_LKZ5yrx2MnDjguLFR-g?e=KXf7qo). Unpack that into a directory on your server (normally to `$HOME/vzw/iot`):
+
 ```
  cd
  mkdir vzw
  cd vzw
  tar zxvf vzw.iot.tgz
 ```
+We get EDR data from `../iot/rhy` in which we see files like:
+```
+RFDR46EUTX_flow_REPORTOCS_20191004112349_test_000000000_708
+RFDR46EUTX_flow_REPORTOCS_20191004112449_test_000000000_709
+RFDR46EUTX_flow_REPORTOCS_20191004112549_test_000000000_710
+```
 
-If you need to change the location of the source CSV data, you will need to set the environment variable HOST_DATA_SOURCE accordingly before running the tests.
+If you need to change the location of the source CSV data, you will need to set the environment variable `HOST_DATA_SOURCE` accordingly before running the tests.
 
 ### Target Data
 
 Make a directory $HOME/orctest-output. If you need to use a different location, you will need to set the environment variable HOST_DATA_TARGET before running the tests.
+
+### Starting the test container
 
 Next, start the test runtime:
 ```
@@ -207,15 +219,15 @@ When starting the container, use Docker's -v switch to mount the file on the con
 docker run ... -v /path/on/host/iot://home/sqlstream/iot ...
 ```
 
-The path for source data on the host is expected to be $HOME/vzw/iot - this can be overridden by setting the HOST_DATA_ROOT environment
-variable. 
-
-The root path for source data on the container is expected to be `/home/sqlstream/iot/`; we get EDR data from ../iot/rhy in which we see files like:
+The path for source data on the host is expected to be `$HOME/vzw/iot` - this can be overridden by setting the `HOST_DATA_SOURCE` environment
+variable. The root path for source data on the container is expected to be `/home/sqlstream/iot/`; we get EDR data from `../iot/rhy` in which we see files like:
 ```
 RFDR46EUTX_flow_REPORTOCS_20191004112349_test_000000000_708
 RFDR46EUTX_flow_REPORTOCS_20191004112449_test_000000000_709
 RFDR46EUTX_flow_REPORTOCS_20191004112549_test_000000000_710
 ```
+
+For more about environment variables that can be used as arguments, see **Arguments for the runtime** above in the **Testing** section.
 
 If using Kubernetes, follow the same approach, creating a read-only volume for this source data so that the test containers running in a pod can mount the volume.
 
