@@ -32,12 +32,14 @@ This test harness relies on two Docker images:
 
 | Image Name | Purpose 
 | --- | ---
-| `streamlab-git-dev` | Includes StreamLab, used for project development
-| `streamlab-git` | Only includes s-Server, used as a run time environment
+| `sqlstream/streamlab-git-dev` | Includes StreamLab, used for project development
+| `sqlstream/streamlab-git` | Only includes s-Server, used as a run time environment
 
-For testing purposes only the second, `streamlab-git` image is needed. It is also assumed you have Docker already installed.
+For testing purposes only the second, `sqlstream/streamlab-git` image is needed. It is also assumed you have Docker already installed.
 
-To prepare the test image
+The test image is prepared as shown below - but note that this will usually be performed by the SQLstream team who can also push the build to the DockerIO repository.
+This makes an image called `sqlstream/streamlab-git` in your local Docker repository and pushes it to Docker. This image is based on the 'release' (6.0.1) branch docker image `sqlstream/minimal:release`. You should rerun `./dockerbuild.sh` whenever you want to pull the latest version of `sqlstream/minimal`. 
+
 
 ```
  cd
@@ -47,7 +49,7 @@ To prepare the test image
  ./dockerbuild.sh
 ```
 
-This makes a local image called `streamlab-git` in your local Docker repository. This image is based on the 'release' (6.0.1) branch docker image `sqlstream/minimal:release`. You should rerun `./dockerbuild.sh` whenever you want to pull the latest version of `sqlstream/minimal`. When a container is started from this image it:
+When a container is started from this image it:
 
 * pulls support code from the `sqlstream-docker-utils` github repository
 * pulls the `sqlstream-orctest` code from this github repository
@@ -147,7 +149,7 @@ The `dockertest.sh` script ends by tailing the docker log file (`docker logs -f 
 
 # Developing and extending the tests
 
-## Preparing the development image `streamlab-git-dev`
+## Preparing the development image `sqlstream/streamlab-git-dev`
 
 If you are planning to change the tests, you need to use the `streamlab-git-dev` image which is based on the public `sqlstream/development:release` image.
 
@@ -158,7 +160,7 @@ To build that
  ./dockerbuild.sh
 ```
 
-This makes a local image called `streamlab-git-dev` in your local Docker repository. This image is based on the 'release' (6.0.1) branch docker image `sqlstream/minimal:release`. You should rerun `./dockerbuild.sh` whenever you want to pull the latest version of `sqlstream/minimal`.
+This makes a local image called `sqlstream/streamlab-git-dev` in your local Docker repository and then pushes it to Docker. This image is based on the 'release' (6.0.1) branch docker image `sqlstream/minimal:release`. Normally this image will be rebuilt by the SQLstream engineering team re-running `./dockerbuild.sh` whenever the latest version of `sqlstream/minimal:release` is modified.
 
 Note that __the image does not include the `sqlstream-orctest` project definitions__ - these get added whenever a container is created from the image. So you don't need to rebuild this image to pick up changes to `sqlstream-orctest` as long as those changes have been pushed to the original master repo on github.
 
