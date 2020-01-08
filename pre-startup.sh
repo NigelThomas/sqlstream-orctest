@@ -6,7 +6,7 @@
 
 echo ... add definitions to hosts file
 
-cat hadoop/testhosts >> /etc/hosts
+#cat hadoop/testhosts >> /etc/hosts
 
 echo ... Creating the clean_edrs interface stream
 
