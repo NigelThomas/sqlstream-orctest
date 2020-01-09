@@ -4,6 +4,10 @@
 #
 # Assume we are running in the project directory
 
+
+cp -v hadoop/core-site.xml hadoop/hdfs-site.xml hadoop/svc*.keytab ..
+ls -l
+
 echo ... add definitions to hosts file
 
 #cat hadoop/testhosts >> /etc/hosts
