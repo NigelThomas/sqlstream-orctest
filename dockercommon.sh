@@ -26,7 +26,7 @@ fi
 # mount the custom JNDI directory if needed (else we use the git repo's jndi directory
 # note: you may use the project's own jndi directory in which case working copies of properties files will override committed/pushed copies
 
-if [ -n "HOST_JNDI_DIR" ]
+if [ -n "$HOST_JNDI_DIR" ]
 then
     HOST_JNDI_MOUNT="-v ${HOST_JNDI_DIR:=$HERE/jndi}:$CONTAINER_JNDI_DIR"
 fi
