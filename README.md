@@ -125,6 +125,7 @@ The `dockertest.sh` script supports setting certain arguments by supplying value
 | LOAD_SLAB_FILES | "IngestCSV.slab WriteCSVtoHDFS.slab" | instructs the container to load only the listed StreamLab project files. Generally it will be more convenient to combine the ingest project with just one write (sink, egress) project at a time.
 | HOST_DATA_SOURCE | $HOME/vzw/iot | Location of the source data on the host server (mounted on the container as `/home/sqlstream/iot`)
 | HOST_DATA_TARGET | $HOME/output | Location of local target data on the host server (mounted on the container as `/home/sqlstream/output`). **NOTE** if this is set to "none" then the output volume will not be mounted and all local target data will remain within the container
+| HOST_JNDI_DIR | (empty) | If this variable points to a directory, that directory will be mounted as `/home/sqlstream/jndi` and any property files in the directory will be linked to `$SQLSTREAM_HOME/plugin/jndi` on the container. This allows callers to configure options for source and sink streams and servers - see below for more information.
 | SQLSTREAM_HEAP_MEMORY | 4096m | Java max heap memory (set using -Xmx<size> ; include k, m, g units as required. s-Server default is 2048m)
 
 You can set any one or more of these environment variables either directly on the command line:
@@ -146,6 +147,16 @@ The default setting for `LOAD_SLAB_FILES` checks the HDFS delivery. The other co
  export LOAD_SLAB_FILES="IngestCSV.slab WriteORCtoHive.slab"
  ./dockertest.sh
 ```
+### Setting JNDI property files
+
+There is an example property file `LOCALDB.StreamLab_Output_WriteORCtoHDFS.pipeline_1_out_sink_orc_hdfs_fs.properties` in the `jndi` directory in this git repository. This allows you to set properties for the HDFS sink, notably the `HDFS_OUTPUT_DIR` option. See https://docs.sqlstream.com/sql-reference-guide/create-statements/createserver/#using-properties-files. Note that you can only set options which haven't already been set at the (source or sink) FOREIGN STREAM level - these JNDI properties can override SERVER options but not FOREIGN STREAM options.
+
+To change the properties files, you can either:
+1. edit the properties files in place (without comitting them) and then set `HOST_JNDI_DIR` to point to that `sqlstream-orctest/jndi` directory
+2. copy all the properties files to another directory, edit as required, and set `HOST_JNDI_DIR` to point to that directory.
+
+The directory you select will be mounted as `/home/sqlstream/jndi` on the container, and then all the `*.properties` files in it will be linked into `$SQLSTREAM_HOME/plugin/jndi` where they will be found by the SQLstream s-Server engine.
+
 
 ### Following the container log
 
