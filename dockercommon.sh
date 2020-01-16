@@ -7,7 +7,14 @@ GIT_ACCOUNT=https://github.com/NigelThomas
 GIT_PROJECT_NAME=sqlstream-orctest
 
 
-docker kill $CONTAINER_NAME
+# kill any orc test container running on this host (because ports will clash)
+# TODO only kill those that are actually running
+
+for c in orc_hdfs_dev orc_hdfs_test orc_hive_dev orc_hive_test
+do
+    docker kill $c
+done
+
 docker rm $CONTAINER_NAME
 
 CONTAINER_DATA_SOURCE=/home/sqlstream/iot
