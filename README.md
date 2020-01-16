@@ -14,7 +14,7 @@ And the following write / egress projects which can be executed in parallel or s
 
 | StreamLab project | Description | Writes to | Status 2020/01/06
 | --- | --- | --- | ---
-| WriteORCtoHDFS | write to ORC files | `$HOME/orctest-output` on the host server | Not yet writing to HDFS
+| WriteORCtoHDFS | write to ORC files | `$HOME/orc_hdfs_test-output` on the host server | Not yet writing to HDFS
 | WriteCSVlocal | a bare-bones CSV egress just to verify pipeline functionality | `/home/sqlstream/output` on the container | Good
 | WriteCSVtoHDFS | write to HDFS with no authentication | TBA | NOT FULLY WORKING
 | WriteORChive  | write to ORC files in a Hive table | TBA | NOT YET IMPLEMENTED
@@ -59,7 +59,7 @@ Note that __the image does not include the `sqlstream-orctest` project definitio
 Tests are executed without requiring StreamLab. At runtime, the SQL will be extracted from the project and installed. 
 
 The project depends on the streamlab-git runtime (see https://github.com/NigelThomas/streamlab-git.git). 
-To start the projects, use the `dockertest.sh` script. You can either allow all egress pipelines to be installed - they will run in parallel - or you can nominate just a subset to
+To start the projects, use the `orc_hdfs_test.sh` script. You can either allow all egress pipelines to be installed - they will run in parallel - or you can nominate just a subset to
 be executed by supplying a comma-separated list of projects to be installed (note: `CSVingest` is always loaded).
 
 ## Running tests using the `sqlstream-orctest` project
@@ -95,7 +95,7 @@ If you need to change the location of the source CSV data, you will need to set 
 
 ### Target Data
 
-Make a directory $HOME/orctest-output. If you need to use a different location, you will need to set the environment variable HOST_DATA_TARGET before running the tests.
+Make a directory $HOME/orc_hdfs_test-output. If you need to use a different location, you will need to set the environment variable HOST_DATA_TARGET before running the tests.
 
 If you do not want to expose output data on the host server, just set the `HOST_DATA_TARGET` environment variable:
 
@@ -103,7 +103,7 @@ If you do not want to expose output data on the host server, just set the `HOST_
 export HOST_DATA_TARGET=none
 ```
 
-before running the `dockertest.sh` script as shown below.
+before running the `orc_hdfs_test.sh` script as shown below.
 
 
 ### Starting the test container
@@ -111,14 +111,14 @@ before running the `dockertest.sh` script as shown below.
 Next, start the test runtime:
 ```
  cd sqlstream-orctest
- LOAD_SLAB_FILES="IngestCSV.slab WriteCSVtoHDFS.slab" ./dockertest.sh
+ LOAD_SLAB_FILES="IngestCSV.slab WriteCSVtoHDFS.slab" ./orc_hdfs_test.sh
 ```
 
-The container will be named `orcdev`. The script automatically kills and removes any existing `orcdev` container, so be careful not to accidentally rerun the `dockertest.sh` script while a test is underway unless you want to abort the first test.
+The container will be named `orc_hdfs_test`. The script automatically kills and removes any existing `orc_hdfs_dev` container, so be careful not to accidentally rerun the `orc_hdfs_test.sh` script while a test is underway unless you want to abort the first test.
 
 ### Arguments for the runtime
 
-The `dockertest.sh` script supports setting certain arguments by supplying values in some environment variables:
+The `orc_hdfs_test.sh` script supports setting certain arguments by supplying values in some environment variables:
 
 | Environment Variable | Default | Usage
 | --- | --- | ---
@@ -130,7 +130,7 @@ The `dockertest.sh` script supports setting certain arguments by supplying value
 
 You can set any one or more of these environment variables either directly on the command line:
 ```
- HOST_DATA_ROOT=path/to/my/tarball/ LOAD_SLAB_FILES="CSVingest.slab WriteCSVtoHDFS.slab" ./dockertest.sh
+ HOST_DATA_ROOT=path/to/my/tarball/ LOAD_SLAB_FILES="CSVingest.slab WriteCSVtoHDFS.slab" ./orc_hdfs_test.sh
 ```
 
 or set and export these environment variables first: 
@@ -138,15 +138,19 @@ or set and export these environment variables first:
 ```
  export HOST_DATA_ROOT=path/to/my/tarball/
  export LOAD_SLAB_FILES="IngestCSV.slab WriteORCtoHDFS.slab" 
- ./dockertest.sh
+ ./orc_hdfs_test.sh
 ```
 
 The default setting for `LOAD_SLAB_FILES` checks the HDFS delivery. The other common setting will be to test Hive:
 
 ```
  export LOAD_SLAB_FILES="IngestCSV.slab WriteORCtoHive.slab"
- ./dockertest.sh
+ ./orc_hdfs_test.sh
 ```
+
+**NOTE** There is an equivalent script `orc_hive_test.sh` which behaves exactly the same **except** that the default for LOAD_SLAB_FILES is "IngestCSV.slab WriteCSVtoHive.slab" - 
+it sets up a container `orc_hive_test` which by default delivers data to a Hive table.
+
 ### Setting JNDI property files
 
 There is an example property file `LOCALDB.StreamLab_Output_WriteORCtoHDFS.pipeline_1_out_sink_orc_hdfs_fs.properties` in the `jndi` directory in this git repository. This allows you to set properties for the HDFS sink, notably the `HDFS_OUTPUT_DIR` option. See https://docs.sqlstream.com/sql-reference-guide/create-statements/createserver/#using-properties-files. Note that you can only set options which haven't already been set at the (source or sink) FOREIGN STREAM level - these JNDI properties can override SERVER options but not FOREIGN STREAM options.
@@ -160,7 +164,7 @@ The directory you select will be mounted as `/home/sqlstream/jndi` on the contai
 
 ### Following the container log
 
-The `dockertest.sh` script ends by tailing the docker log file (`docker logs -f orctest`) so once that has shown the container  being started and s-Server trace log messages in the log eyou can Ctrl-C out, or you can leave the log tail running and work in another terminal.
+The `orc_hdfs_test.sh` script ends by tailing the docker log file (`docker logs -f orc_hdfs_test`) so once that has shown the container  being started and s-Server trace log messages in the log eyou can Ctrl-C out, or you can leave the log tail running and work in another terminal.
 
 
 # Developing and extending the tests
@@ -182,20 +186,21 @@ Note that __the image does not include the `sqlstream-orctest` project definitio
 
 ## Running the development image
 
-Start the development runtime using the `dockerdev.sh` script:
+Start the development runtime using the `orc_hdfs_dev.sh` script:
 ```
  cd
  cd sqlstream-orctest
- LOAD_SLAB_FILES="IngestCSV.slab WriteCSVtoHDFS.slab" ./dockerdev.sh
+ LOAD_SLAB_FILES="IngestCSV.slab WriteCSVtoHDFS.slab" ./orc_hdfs_dev.sh
 ```
-The container will be named `orcdev`. The script automatically kills and removes any existing `orcdev` container, so be careful not to accidentally rerun the `dockerdev.sh` script unless you are sure you want to discard the existing container.
+The container will be named `orc_hdfs_dev`. The script automatically kills and removes any existing `orc_hdfs_dev` container, so be careful not to accidentally rerun the `orc_hdfs_dev.sh` script unless you are sure you want to discard the existing container.
 
-You can use LOAD_SLAB_FILES and HOST_DATA_ROOT environment variables exactly as defined for the test image (but using the `./dockerdev,.sh script`). The same defaults will apply.
+You can use LOAD_SLAB_FILES and HOST_DATA_ROOT environment variables exactly as defined for the test image (but using the `./orc_hdfs_dev.sh` script). The same defaults will apply.
 
 When you start the container the selected StreamLab projects will be already loaded and started. 
 
-The `dockerdev.sh` script ends by tailing the docker log file (`docker logs -f orcdev`) so once that has shown the container  being started and s-Server trace log messages in the log eyou can Ctrl-C out, or you can leave the log tail running and work in another terminal.
+The `orc_hdfs_dev.sh` script ends by tailing the docker log file (`docker logs -f orc_hdfs_dev`) so once that has shown the container  being started and s-Server trace log messages in the log eyou can Ctrl-C out, or you can leave the log tail running and work in another terminal.
 
+Again, there is an equivalent script `orc_hive_test.sh` which generates a container called `orc_hive_test` and directs the output data to a table in Hive.
 
 # Making changes to the StreamLab rojects
 
@@ -211,7 +216,7 @@ To save changes to your project you should:
 3. Move the .slab file(s) from Downloads into the working copy to overwrite existing .slab file(s)
 4. Then `git add` all changed files, `git commit` and finally `git push origin master`
 
-Note: the `dockerdev.sh` script gets the slab files from the git repository and NOT from your local working copy. Be sure to commit **and push** your changes before re-testing.
+Note: the `orc_hdfs_dev.sh` script gets the slab files from the git repository and NOT from your local working copy. Be sure to commit **and push** your changes before re-testing.
 
 ## Scripting project export
 
@@ -220,7 +225,7 @@ line API (both curl commands must be executed in this order) for each project:
 
 ```
 curl http://localhost:5585/_project_export/user/CSVingest
-curl -o orctest.slab http://localhost:5585/_download/user/CSVingest
+curl -o myproject.slab http://localhost:5585/_download/user/CSVingest
 ```
 
 These commands can be found in `export_project.sh`
@@ -231,7 +236,7 @@ These commands can be found in `export_project.sh`
 The data consists of EDRs - CSV files - these are currently stored in compressed form in a file `vzw.iot.tgz`.
 The data is too large to save in github (even compressed it is 160Mb), so it is stored in OneDrive - ask nigel.thomas@guavus.com for access. Inflate the tarball - the top level directory is `iot`.
 
-When starting the container, use Docker's -v switch to mount the file on the container as a volume. This is shown in `dockerdev.sh`
+When starting the container, use Docker's -v switch to mount the file on the container as a volume. This is shown in `orc_hdfs_dev.sh`
 
 ```
 docker run ... -v /path/on/host/iot://home/sqlstream/iot ...
