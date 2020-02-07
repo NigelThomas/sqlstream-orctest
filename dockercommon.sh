@@ -5,7 +5,7 @@
 
 GIT_ACCOUNT=https://github.com/NigelThomas
 GIT_PROJECT_NAME=sqlstream-orctest
-
+: ${BASE_IMAGE_LABEL:=release}
 
 # kill any orc test container running on this host (because ports will clash)
 # TODO only kill those that are actually running
@@ -44,6 +44,6 @@ docker run -v ${HOST_DATA_SOURCE:=$HOME/vzw/iot}:$CONTAINER_DATA_SOURCE $HOST_TG
            -e LOAD_SLAB_FILES="${LOAD_SLAB_FILES:=CSVingest.slab WriteORCtoHDFS.slab}" \
            -e SQLSTREAM_HEAP_MEMORY=${SQLSTREAM_HEAP_MEMORY:=4096m} \
            -e SQLSTREAM_SLEEP_SECS=${SQLSTREAM_SLEEP_SECS:=10} \
-           -d --name $CONTAINER_NAME -it $BASE_IMAGE
+           -d --name $CONTAINER_NAME -it $BASE_IMAGE:$BASE_IMAGE_LABEL
 
 docker logs -f $CONTAINER_NAME
