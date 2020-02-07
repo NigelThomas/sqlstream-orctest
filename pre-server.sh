@@ -8,8 +8,8 @@ echo ... set up hadoop configuration
 
 su sqlstream -m -c "cp -v hadoop/core-site.xml hadoop/hdfs-site.xml hadoop/svc*.keytab .."
 
-#echo ... add definitions to hosts file - doesn't seem to be needed
-#cat hadoop/testhosts >> /etc/hosts
+echo ... add definitions to hosts file
+cat hadoop/testhosts >> /etc/hosts
 
 if [ -e hadoop/krb5.conf ]
 then
