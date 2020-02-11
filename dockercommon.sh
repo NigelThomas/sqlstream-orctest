@@ -21,14 +21,15 @@ CONTAINER_DATA_SOURCE=/home/sqlstream/iot
 CONTAINER_DATA_TARGET=/home/sqlstream/output
 CONTAINER_JNDI_DIR=/home/sqlstream/jndi
 
-# Unless disabled, link the targer volume
+# Unless disabled, link the target volume
+# LEAVE AS ALWAYS DISABLED - local output stays on the container only
 
-if [ "$HOST_DATA_TARGET" = "none" ]
-then
-    HOST_TGT_MOUNT=
-else
-    HOST_TGT_MOUNT="-v ${HOST_DATA_TARGET:=$HOME/orctest-output}:$CONTAINER_DATA_TARGET"
-fi
+#if [ "$HOST_DATA_TARGET" = "none" ]
+#then
+#    HOST_TGT_MOUNT=
+#else
+#    HOST_TGT_MOUNT="-v ${HOST_DATA_TARGET:=$HOME/orctest-output}:$CONTAINER_DATA_TARGET"
+#fi
 
 # mount the custom JNDI directory if needed (else we use the git repo's jndi directory
 # note: you may use the project's own jndi directory in which case working copies of properties files will override committed/pushed copies
